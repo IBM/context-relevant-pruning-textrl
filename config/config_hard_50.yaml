@@ -1,0 +1,56 @@
+general:
+  experiment_tag: 'lstm_drqn_'
+  env_id: 'twcc_hard_level15_gamesize50_step75_seed9_train'
+  run_test: True
+  valid_env_id: 'twcc_hard_level15_gamesize10_step75_seed9_validation'
+  test_env_id: []
+#  test_env_id: ['twcc_easy_level10_gamesize10_step50_seed0_test']
+  discount_gamma: 0.5
+  random_seed: 42
+  observation_cache_capacity: 1  # concat window of history observation, 1 means no history observations available
+  experiments_dir: 'experiments/summary_env_hard_50'
+  use_cuda: True  # disable this when running on machine without cuda
+  provide_prev_action: True
+
+  # replay memory
+  history_size: 8
+  update_from: 4
+  replay_memory_capacity: 500000 
+  replay_memory_priority_fraction: 0.25  # 0.0 to disable this
+  update_per_k_game_steps: 4
+  replay_batch_size: 32
+
+  # epsilon greedy
+  epsilon_anneal_epochs: 2000  # -1 if not annealing
+  epsilon_anneal_from: 1.0
+  epsilon_anneal_to: 0.2
+
+  # counting reward
+  revisit_counting: True
+  revisit_counting_lambda_anneal_from: 1.0
+  revisit_counting_lambda_anneal_epochs: -1  # -1 if not annealing
+  revisit_counting_lambda_anneal_to: 0.0
+
+training:
+  scheduling:
+    batch_size: 10
+    test_batch_size: 10
+    epoch: 6000
+    model_checkpoint_path: 'saved_models/summary_model_dqrn_hard_50.pt'
+    logging_frequency: 20
+
+  optimizer:
+    step_rule: 'adam'  # adam, sgd
+    learning_rate: 0.001
+    clip_grad_norm: 5
+
+model:
+  lstm_dqn:
+    embedding_size: 20
+    encoder_rnn_hidden_size: [100]
+    action_scorer_hidden_dim: 64
+    dropout_between_rnn_layers: 0.
+
+bootstrap:
+  filter_sentence: False
+  threshold: 0.3
